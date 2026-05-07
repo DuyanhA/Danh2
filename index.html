@@ -9,6 +9,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
         
+        /* Hiệu ứng node */
         .connection-dot { 
             width: 14px; 
             height: 14px; 
@@ -23,9 +24,21 @@
         .connection-dot:hover { transform: scale(1.3); }
         .active-dot { transform: scale(1.6); border-color: #334155; box-shadow: 0 0 10px rgba(0,0,0,0.2); }
 
+        /* Animation cho bảng */
+        @keyframes table-flash {
+            0% { background-color: transparent; }
+            50% { background-color: var(--flash-color); opacity: 0.5; }
+            100% { background-color: transparent; }
+        }
+
+        .flash-active {
+            animation: table-flash 0.6s ease-out;
+        }
+
         .glass-panel { 
             background: white; 
             border: 1px solid #e2e8f0; 
+            position: relative;
         }
         
         .table-container::-webkit-scrollbar { height: 6px; }
@@ -40,7 +53,7 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div class="lg:col-span-2 glass-panel rounded-2xl shadow-sm overflow-hidden">
+            <div id="main-table-container" class="lg:col-span-2 glass-panel rounded-2xl shadow-sm overflow-hidden">
                 <div class="table-container overflow-x-auto">
                     <table class="w-full border-collapse text-sm">
                         <thead>
@@ -53,38 +66,38 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100">
-                            <tr class="hover:bg-slate-50 transition">
+                            <tr class="hover:bg-slate-50/50 transition">
                                 <td class="p-4 text-slate-700 font-medium">Buồng trứng, 2/3 ngoài vòi trứng, Niệu quản trên</td>
-                                <td class="p-4 text-center"><button onclick="showInfo('ovaries', this)" class="connection-dot bg-rose-500"></button></td>
+                                <td class="p-4 text-center"><button onclick="showInfo('ovaries', this, '#f43f5e')" class="connection-dot bg-rose-500"></button></td>
                                 <td></td><td></td><td></td>
                             </tr>
-                            <tr class="hover:bg-slate-50 transition">
+                            <tr class="hover:bg-slate-50/50 transition">
                                 <td class="p-4 text-slate-700 font-medium leading-relaxed">
                                     Thân tử cung, Cổ tử cung, Âm đạo trên, 1/3 trong vòi trứng, 
                                     Dây chằng rộng, Bàng quang trên, Hồi tràng & Đại tràng cuối
                                 </td>
                                 <td></td>
-                                <td class="p-4 text-center"><button onclick="showInfo('internal_symp', this)" class="connection-dot bg-amber-500"></button></td>
+                                <td class="p-4 text-center"><button onclick="showInfo('internal_symp', this, '#f59e0b')" class="connection-dot bg-amber-500"></button></td>
                                 <td></td>
-                                <td class="p-4 text-center"><button onclick="showInfo('internal_para', this)" class="connection-dot bg-emerald-500"></button></td>
+                                <td class="p-4 text-center"><button onclick="showInfo('internal_para', this, '#10b981')" class="connection-dot bg-emerald-500"></button></td>
                             </tr>
-                            <tr class="hover:bg-slate-50 transition">
+                            <tr class="hover:bg-slate-50/50 transition">
                                 <td class="p-4 text-slate-700 font-medium">Thành bụng & Lưng thấp</td>
                                 <td></td>
-                                <td class="p-4 text-center"><button onclick="showInfo('wall_t12', this)" class="connection-dot bg-orange-400"></button></td>
-                                <td class="p-4 text-center"><button onclick="showInfo('wall_l1', this)" class="connection-dot bg-sky-500"></button></td>
+                                <td class="p-4 text-center"><button onclick="showInfo('wall_t12', this, '#fb923c')" class="connection-dot bg-orange-400"></button></td>
+                                <td class="p-4 text-center"><button onclick="showInfo('wall_l1', this, '#0ea5e9')" class="connection-dot bg-sky-500"></button></td>
                                 <td></td>
                             </tr>
-                            <tr class="hover:bg-slate-50 transition">
+                            <tr class="hover:bg-slate-50/50 transition">
                                 <td class="p-4 text-slate-700 font-medium">Âm hộ trước, Niệu đạo, Âm vật</td>
                                 <td></td><td></td>
-                                <td class="p-4 text-center"><button onclick="showInfo('external_ant', this)" class="connection-dot bg-blue-500"></button></td>
+                                <td class="p-4 text-center"><button onclick="showInfo('external_ant', this, '#3b82f6')" class="connection-dot bg-blue-500"></button></td>
                                 <td></td>
                             </tr>
-                            <tr class="hover:bg-slate-50 transition">
+                            <tr class="hover:bg-slate-50/50 transition">
                                 <td class="p-4 text-slate-700 font-medium">Sàn chậu, Hậu môn, Tầng sinh môn, Âm đạo dưới</td>
                                 <td></td><td></td><td></td>
-                                <td class="p-4 text-center"><button onclick="showInfo('floor', this)" class="connection-dot bg-green-600"></button></td>
+                                <td class="p-4 text-center"><button onclick="showInfo('floor', this, '#16a34a')" class="connection-dot bg-green-600"></button></td>
                             </tr>
                         </tbody>
                     </table>
@@ -92,20 +105,16 @@
             </div>
 
             <div id="detail-panel" class="bg-white p-6 rounded-2xl shadow-md border border-slate-200 h-fit sticky top-10">
-                <div id="default-msg" class="py-20 text-center">
-                    <p class="text-slate-400 text-sm">Chọn một điểm tròn màu trên bảng để xem chi tiết dây thần kinh.</p>
+                <div id="default-msg" class="py-20 text-center text-slate-400 text-sm">
+                    Chọn một nút màu trên bảng để xem chi tiết.
                 </div>
-
                 <div id="info-content" class="hidden">
                     <span id="info-tag" class="px-2 py-1 rounded text-[10px] font-bold uppercase mb-4 inline-block"></span>
                     <h2 id="info-title" class="text-xl font-bold text-slate-800 mb-1"></h2>
                     <p id="info-segments" class="text-indigo-600 font-bold mb-6 italic"></p>
-                    
                     <div class="space-y-4 text-sm">
-                        <div>
-                            <h4 class="text-slate-400 font-bold text-[10px] uppercase tracking-tighter mb-1">Dây thần kinh chi phối</h4>
-                            <p id="info-nerves" class="text-slate-700 bg-slate-50 p-3 rounded-lg border border-slate-100"></p>
-                        </div>
+                        <h4 class="text-slate-400 font-bold text-[10px] uppercase mb-1">Thần kinh dẫn truyền</h4>
+                        <p id="info-nerves" class="text-slate-700 bg-slate-50 p-3 rounded-lg border border-slate-100 italic"></p>
                     </div>
                 </div>
             </div>
@@ -114,65 +123,30 @@
 
     <script>
         const data = {
-            ovaries: {
-                tag: "Ngực T9-T10",
-                title: "Buồng trứng & Hệ thống phụ",
-                segments: "Thoracic T9 – T10",
-                nerves: "Các sợi giao cảm (Sympathetic) đi qua đám rối thận (Renal), đám rối động mạch chủ (Aortic), hạch tạng (Celiac) và đám rối mạc treo tràng trên.",
-                color: "rose"
-            },
-            internal_symp: {
-                tag: "Giao cảm T11-L2",
-                title: "Tử cung & Tạng chậu",
-                segments: "Thoracolumbar T11 – L2",
-                nerves: "Các sợi thần kinh tự chủ ngực-thắt lưng (Giao cảm) dẫn truyền qua đám rối hạ vị (Hypogastric plexus).",
-                color: "amber"
-            },
-            internal_para: {
-                tag: "Đối giao cảm S2-S4",
-                title: "Tử cung & Tạng chậu",
-                segments: "Sacral S2 – S4",
-                nerves: "Các sợi thần kinh tự chủ vùng cùng (Đối giao cảm) dẫn truyền thông qua dây thần kinh chậu (Pelvic nerve).",
-                color: "emerald"
-            },
-            wall_t12: {
-                tag: "Thành bụng T12-L1",
-                title: "Vùng bụng & Lưng",
-                segments: "T12 – L1",
-                nerves: "Thần kinh chậu hạ vị (Iliohypogastric), thần kinh chậu bẹn (Ilioinguinal) và thần kinh sinh dục đùi (Genitofemoral).",
-                color: "orange"
-            },
-            wall_l1: {
-                tag: "Thành bụng L1-L2",
-                title: "Vùng bụng dưới & Lưng",
-                segments: "L1 – L2",
-                nerves: "Thần kinh chậu bẹn (Ilioinguinal) và thần kinh sinh dục đùi (Genitofemoral).",
-                color: "sky"
-            },
-            external_ant: {
-                tag: "Vùng trước L1-L2",
-                title: "Âm hộ & Niệu đạo trước",
-                segments: "L1 – L2",
-                nerves: "Thần kinh chậu bẹn và thần kinh sinh dục đùi.",
-                color: "blue"
-            },
-            floor: {
-                tag: "Vùng cùng S2-S4",
-                title: "Sàn chậu & Tầng sinh môn",
-                segments: "S2 – S4",
-                nerves: "Thần kinh thẹn (Pudendal), thần kinh bẹn, thần kinh sinh dục đùi và thần kinh bì đùi sau.",
-                color: "green"
-            }
+            ovaries: { tag: "T9-T10", title: "Buồng trứng & Hệ phụ", segments: "Thoracic T9 – T10", nerves: "Sợi giao cảm qua đám rối thận, ĐMC, hạch tạng & mạc treo tràng trên.", color: "rose" },
+            internal_symp: { tag: "T11-L2", title: "Tử cung & Tạng chậu", segments: "Thoracolumbar T11 – L2", nerves: "Sợi tự chủ (Giao cảm) qua đám rối hạ vị (Hypogastric plexus).", color: "amber" },
+            internal_para: { tag: "S2-S4", title: "Tử cung & Tạng chậu", segments: "Sacral S2 – S4", nerves: "Sợi tự chủ vùng cùng (Đối giao cảm) qua dây thần kinh chậu (Pelvic nerve).", color: "emerald" },
+            wall_t12: { tag: "T12-L1", title: "Thành bụng & Lưng", segments: "T12 – L1", nerves: "Thần kinh chậu hạ vị, chậu bẹn và sinh dục đùi.", color: "orange" },
+            wall_l1: { tag: "L1-L2", title: "Vùng bụng & Lưng", segments: "L1 – L2", nerves: "Thần kinh chậu bẹn và thần kinh sinh dục đùi.", color: "sky" },
+            external_ant: { tag: "L1-L2", title: "Âm hộ & Cơ quan trước", segments: "L1 – L2", nerves: "Thần kinh chậu bẹn và thần kinh sinh dục đùi.", color: "blue" },
+            floor: { tag: "S2-S4", title: "Sàn chậu & Tầng sinh môn", segments: "S2 – S4", nerves: "Thần kinh thẹn (Pudendal), thần kinh bẹn, sinh dục đùi và bì đùi sau.", color: "green" }
         };
 
-        function showInfo(key, btn) {
+        function showInfo(key, btn, colorCode) {
             const item = data[key];
+            const table = document.getElementById('main-table-container');
             const content = document.getElementById('info-content');
             const defMsg = document.getElementById('default-msg');
             
+            // Xử lý hiệu ứng nháy bảng
+            table.style.setProperty('--flash-color', colorCode);
+            table.classList.remove('flash-active');
+            void table.offsetWidth; // Trigger reflow
+            table.classList.add('flash-active');
+
+            // Hiển thị nội dung
             defMsg.classList.add('hidden');
             content.classList.remove('hidden');
-
             document.getElementById('info-title').innerText = item.title;
             document.getElementById('info-segments').innerText = item.segments;
             document.getElementById('info-nerves').innerText = item.nerves;
@@ -181,7 +155,7 @@
             tag.innerText = item.tag;
             tag.className = `px-2 py-1 rounded text-[10px] font-bold uppercase mb-4 inline-block bg-${item.color}-100 text-${item.color}-700 border border-${item.color}-200`;
 
-            // Active State
+            // Cập nhật trạng thái Active Node
             document.querySelectorAll('.connection-dot').forEach(dot => dot.classList.remove('active-dot'));
             btn.classList.add('active-dot');
         }
